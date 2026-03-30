@@ -1,0 +1,60 @@
+version: 1
+
+paths:
+  # offline mirror root (used by parse_moodle_docs_offline_pages.py)
+  offline_docs_root: "/home/m/Downloads/501_en/"
+
+  # parsed pages.jsonl
+  moodle_docs_output_dir: "data/moodle_docs_501"
+  pages_jsonl_path: "data/moodle_docs_501/pages.jsonl"
+
+  # vector store (Chroma)
+  chroma_persist_dir: "data/chroma_moodle_docs_501"
+  chroma_collection: "moodle_docs_501"
+
+parse_html:
+  min_chars: 50
+  max_chars: 200000
+  # limit: сколько страниц обрабатывать (0 = без лимита)
+  limit: 0
+
+chunking:
+  chunk_size: 1000
+  chunk_overlap: 150
+  min_chunk_chars: 80
+
+embeddings:
+  model_name: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+
+indexing:
+  batch_size: 200
+  # limit: сколько страниц обрабатывать при индексации (0 = без лимита)
+  limit: 0
+
+retrieval:
+  top_k: 5
+  # printing only (retrieve_chroma.py)
+  max_print_chars: 500
+
+chat:
+  max_history_messages: 10
+  retrieval_history_user_turns: 2
+
+llm:
+  ollama_base_url: "http://127.0.0.1:11434"
+  ollama_model: "qwen3:1.7b"
+  timeout_seconds: 120
+  num_gpu: 0
+  random_seed: 42
+
+  system_prompt_template: |
+    You are a Moodle support assistant.
+    Use ONLY the provided CONTEXT as factual ground.
+    If context is insufficient, explicitly say it is insufficient and suggest what to search next in Moodle docs.
+    Always answer in {target_language}.
+    Keep the answer concise and step-based when appropriate.
+    Maintain continuity with prior dialogue turns.
+
+    CONTEXT:
+    {context}
+

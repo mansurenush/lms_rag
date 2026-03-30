@@ -1,0 +1,50 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: local-assist-ollama
+    
+    
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: local-assist-ollama-pull
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    
+    command: ["pull", "qwen3:1.7b"]
+    restart: "no"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: local-assist-backend
+    depends_on:
+      ollama:
+        condition: service_healthy
+      ollama-pull:
+        condition: service_completed_successfully
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen3:1.7b
+      CHROMA_PERSIST_DIR: data/chroma_moodle_docs_501
+    ports:
+      - "8061:8061"
+    volumes:
+      - ./data:/app/data
+      - ./configs:/app/configs
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
