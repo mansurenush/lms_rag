@@ -3,8 +3,6 @@
 Извлечь из одной офлайн-страницы MoodleDocs (MediaWiki + HTTrack)
 канонический URL, заголовок и основной текст статьи (без навигации, TOC, скриптов).
 
-Зависимости: из корня репозитория — source .venv/bin/activate && pip install -r requirements.txt
-
 Пример:
   python scripts/extract_moodle_doc_text.py ./0a2f9817397e6cb2610a03c5bebd2b58.html
 """

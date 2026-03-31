@@ -22,6 +22,9 @@
 
 скачал 501_en.zip отсюда: https://wimski.org/docs/?spm=a2ty_o01.29997173.0.0.1b655171e5cSje
 
+По умолчанию конфиг ожидает зеркало в `data/offline_docs/501_en/` (ключ `paths.offline_docs_root` в `configs/config.yaml`).
+Если у тебя другое расположение, измени `paths.offline_docs_root` или передай `--input` в парсер.
+
 
 ### 2.1 Подготовка Python окружения
 

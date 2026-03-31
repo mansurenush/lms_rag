@@ -1,13 +1,7 @@
 
 """
-Пакетный парсинг офлайн-зеркала Moodle Docs (MediaWiki через HTTrack).
-
-Вход: каталог `/home/m/Downloads/501_en/` (или подкаталог), внутри которого лежат `.html`.
-Выход: JSONL по исходным страницам (page-level), чтобы потом:
- - разбивать текст на чанки
- - загружать в LangChain/Qdrant
-
-Основная извлекающая логика берётся из `scripts/extract_moodle_doc_text.py`.
+Вход: каталог с офлайн-зеркалом Moodle Docs (или подкаталог), внутри которого лежат `.html`.
+Выход: JSONL по исходным страницам (page-level):
 """
 
 from __future__ import annotations

@@ -2,7 +2,7 @@ version: 1
 
 paths:
   # offline mirror root (used by parse_moodle_docs_offline_pages.py)
-  offline_docs_root: "/home/m/Downloads/501_en/"
+  offline_docs_root: "data/offline_docs/501_en/"
 
   # parsed pages.jsonl
   moodle_docs_output_dir: "data/moodle_docs_501"
