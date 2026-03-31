@@ -29,7 +29,8 @@ def extract_important_text(html: str) -> tuple[str | None, str, str]:
     """
     Возвращает (canonical_url, page_title, article_plain_text).
     """
-    soup = BeautifulSoup(html, "lxml") if _have_lxml() else BeautifulSoup(html, "html.parser")
+    parser = "lxml" if _have_lxml() else "html.parser"
+    soup = BeautifulSoup(html, parser)
 
     canonical = None
     link = soup.find("link", rel=lambda x: x and "canonical" in x.split())
@@ -44,13 +45,14 @@ def extract_important_text(html: str) -> tuple[str | None, str, str]:
     if not page_title:
         page_title = _parse_rlconf_title(html) or ""
 
-    root = soup.select_one("
+    root = soup.select_one("#mw-content-text")
     if not root:
         return canonical, page_title, ""
 
-    
-    main = BeautifulSoup(str(root), "lxml" if _have_lxml() else "html.parser")
-    root2 = main.select_one("
+    main = BeautifulSoup(str(root), parser)
+    root2 = main.select_one("#mw-content-text")
+    if root2 is None:
+        root2 = main
 
     for tag in root2.find_all(["script", "style", "noscript"]):
         tag.decompose()
@@ -62,7 +64,7 @@ def extract_important_text(html: str) -> tuple[str | None, str, str]:
         elif text.startswith("Added by HTTrack") or text.startswith("/Added by HTTrack"):
             c.extract()
 
-    toc = root2.select_one("
+    toc = root2.select_one("#toc")
     if toc:
         toc.decompose()
 
@@ -100,7 +102,7 @@ def main() -> int:
     if title:
         lines.append(f"Title: {title}")
     lines.append("")
-    lines.append(body if body else "(не найден блок 
+    lines.append(body if body else "(не найден блок содержимого)")
     print("\n".join(lines))
     return 0
 
